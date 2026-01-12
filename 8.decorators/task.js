@@ -29,25 +29,24 @@ function cachingDecoratorNew(func) {
 //Задача № 2
 function debounceDecoratorNew(func, delay) {
   let timeoutId = null;
-  let isThrottled = true;
 
   function wrapper(...args) {
     wrapper.allCount++;
-
-    if(isThrottled){
-        wrapper.count++;
-        func(...args);
-        isThrottled = false;
-    }
     
     if(timeoutId){
         clearTimeout(timeoutId);
     }
 
+    if(!wrapper.count){
+      func(...args);
+      wrapper.count++;
+    }
+
     timeoutId = setTimeout(() => {
-        wrapper.count++;
-        timeoutId = null;
         func(...args);
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        wrapper.count++;
     }, delay);
   }
 
